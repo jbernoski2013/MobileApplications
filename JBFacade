@@ -1,0 +1,205 @@
+function JBAddReview(){
+    if(JBValidate_JBAddForm()){
+        var businessName = $("#JBBusinessName").val();
+        var typeId = $("#JBType").val();
+        var reviewerEmail = $("#JBReviewerEmail").val();
+        var reviewerComments = $("#JBReviewerComments").val();
+        var reviewDate = $("#JBDate").val();
+
+        var hasRating = $("#JBRating").prop("checked");
+
+        var rating1 = $("#JBFoodQuality").val();
+        var rating2 = $("#JBService").val();
+        var rating3 = $("#JBValue").val();
+
+        console.info("businessName: " + businessName + " typeId: " + typeId + " reviewerEmail: " + reviewerEmail + " reviewerComments: " + reviewerComments
+                    + " reviewDate: " + reviewDate + " hasRating: " + hasRating + " rating1: " + rating1 + " rating2: " + rating2 + " rating3: " + rating3);
+
+        var options = [businessName,typeId,reviewerEmail,reviewerComments,reviewDate,hasRating,rating1,rating2,rating3];
+
+        function callback(){
+            console.info("Record inserted successfully");
+            alert("New Record inserted into database.");
+        }
+
+        Review.JBInsert(options,callback);
+    }
+    else{
+        console.error("Validation error");
+    }
+}
+
+function JBDeleteReview() {
+    var id = localStorage.getItem("id");
+
+    var options = [id];
+    function callback() {
+        console.info("Success: Record deleted successfully");
+        $.mobile.changePage("#JBReviewPage", {transition: 'none'});
+    }
+    Review.JBDelete(options, callback);
+}
+
+/*function JBUpdateTypesDropDown() {
+    var options = [];
+    function callback(tx, results){
+        var html = "";
+        for (var i = 0; i < results.rows.length; i++) {
+            var row = results.rows.item(i);
+            if(row['name'] === "Others"){
+                html += "<option id='" + row['name'] + "' name='" + row['name'] + "' selected>" + row['name'] + "</option>";
+            }else {
+                html += "<option id='" + row['name'] + "' name='" + row['name'] + "'>" + row['name'] + "</option>";
+            }
+        }
+        $("#JBType").html(html);
+        $("#JBType").selectmenu("refresh");
+    }
+    Type.JBSelectTypes(options, callback);
+}*/
+
+function JBGetReviews() {
+    var options = [];
+
+    function callback(tx, results) {
+
+        var html = "";
+        for (var i = 0; i < results.rows.length; i++) {
+            var row = results.rows.item(i);
+
+            var avg =0;
+            var int1 = row['rating1']/5;
+            var int2 = row['rating2']/5;
+            var int3 = row['rating3']/5;
+
+            avg = int1+int2+int3;
+            avg = Math.round((avg/3)*100);
+
+            if (row['hasRating']==='true') {
+                html += "<li><a data-role='button' data-row-id=" + row['id'] + " href='#'>"
+                    + "<h1>businessName: " + row['businessName'] + "</h1>"
+                    + "<h2>reviewerEmail: " + row['reviewerEmail'] + "</h2>"
+                    + "<h3>reviewerComments: " + row['reviewerComments'] + "</h3>"
+                    + "<h3>overall rating: " + avg + "%"+"</h3>"
+                    + "</a></li>";
+            }
+            else {
+                html += "<li><a data-role='button' data-row-id=" + row['id'] + " href='#'>"
+                    + "<h1>businessName: " + row['businessName'] + "</h1>"
+                    + "<h2>reviewerEmail: " + row['reviewerEmail'] + "</h2>"
+                    + "<h3>reviewerComments: " + row['reviewerComments'] + "</h3>"
+                    + "</a></li>";
+            }
+        }
+        var lv = $("#lvAll");
+        lv = lv.html(html);
+        //very important
+        lv.listview("refresh");
+
+        $("#lvAll a").on("click", clickHandler);
+
+        function clickHandler() {
+            localStorage.setItem("id", $(this).attr("data-row-id"));
+            //navigate to detail page
+            // both will work
+            $.mobile.changePage("#JBModifyReviewPage", {transition: 'none'});
+            // $(location).prop('href', '#pageDetail');
+        }
+
+
+    }
+
+    Review.JBSelectAll(options, callback);
+}
+
+function JBUpdateReview() {
+
+    if(JBvalidate_JBModifyForm()){
+        var id = localStorage.getItem("id");
+        var businessName = $("#JBModifyBusiness").val();
+        var typeId = $("#JBModifyType").val();
+        var reviewerEmail = $("#JBModifyEmail").val();
+        var reviewerComments = $("#JBModifyComments").val();
+        var reviewDate = $("#JBModifyDate").val();
+
+        if($("#JBAddRating").prop("checked")){
+            var hasRating = "true";
+            var rating1 = $("#JBModifyFood").val();
+            var rating2 = $("#JBModifyService").val();
+            var rating3 = $("#JBModifyValue").val();
+        }
+        else{
+            var hasRating = "false";
+            var rating1 = 0;
+            var rating2 = 0;
+            var rating3 = 0;
+        }
+
+
+
+
+
+        console.info("businessName: " + businessName + " typeId: " + typeId + " reviewerEmail: " + reviewerEmail + " reviewerComments: " + reviewerComments
+            + " reviewDate: " + reviewDate + " hasRating: " + hasRating + " rating1: " + rating1 + " rating2: " + rating2 + " rating3: " + rating3);
+        var options = [businessName,typeId,reviewerEmail,reviewerComments,reviewDate,hasRating,rating1,rating2,rating3,id];
+        function callback(){
+            console.info("Record inserted successfully");
+            alert("Record Updated.");
+        }
+        Review.JBUpdate(options,callback);
+        JBGoBack();
+    }
+    else{
+        console.error("Validation error");
+    }
+}
+
+function JBGoBack(){
+    $(location).prop('href', '#JBReviewPage');
+}
+
+function JBShowCurrentReview() {
+    var id = localStorage.getItem("id");
+    var options = [id];
+
+    $("#JBAddRating").click(function(){
+        if(this.checked){
+            $("#JBModifyRatings").show();
+        }
+        else{
+            $("#JBModifyRatings").hide();
+        }
+    });
+
+
+    function callback(tx, results) {
+        var row = results.rows.item(0);
+        $("#JBModifyBusiness").val(row['businessName']);
+        $("#JBModifyEmail").val(row['reviewerEmail']);
+        $("#JBModifyComments").val(row['reviewerComments']);
+        $("#JBModifyDate").val(row['reviewDate']);
+        $("#JBModifyType").select(row["typeId"]);
+
+        if(row['hasRating'] === 'true'){
+            $("#JBAddRating").prop("checked", true);
+        }
+        else{
+            $("#JBAddRating").prop("checked", false);
+        }
+
+        $("#JBModifyFood").val(row['rating1']);
+        $("#JBModifyService").val(row['rating2']);
+        $("#JBModifyValue").val(row['rating3']);
+
+    }
+    var avg = 0;
+    var int1 = parseInt($("#JBModifyFood").val())/5;
+    var int2 = parseInt($("#JBService").val())/5;
+    var int3 = parseInt($("#JBModifyValue").val())/5;
+
+    avg = int1+int2+int3;
+    avg = Math.round((avg/3)*100);
+    $("#JBModifyOverallRatings").val(avg + "%");
+
+    Review.JBSelect(options, callback);
+}
