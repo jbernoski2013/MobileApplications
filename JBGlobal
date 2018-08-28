@@ -1,0 +1,139 @@
+/* Julia Bernoski
+    March 18th 2018
+    PROG3180 Assignment2
+ */
+
+//to check if checkbox is show for both add and modify page
+function checkUncheck(){
+    $("#JBRating").click(function(){
+        if(this.checked){
+            $("#JBShow").show();
+        }
+        else{
+            $("#JBShow").hide();
+        }
+    });
+   /* $("#JBAddRating").click(function(){
+        if(this.checked){
+            $("#JBModifyRatings").show();
+        }
+        else{
+            $("#JBModifyRatings").hide();
+        }
+    });*/
+}
+
+//save review
+function JBSave_click(){
+    JBAddReview();
+}
+
+//save modified review
+function JBModifyFormSave(){
+    JBvalidate_JBModifyForm();
+}
+
+//to show the modify page
+function modifyPageShow(){
+    JBShowCurrentReview();
+}
+
+//calculations for overall ratings on add page
+function JBCalculate(){
+    var FQ = $("#JBFoodQuality").val();
+    var s = $("#JBService").val();
+    var v = $("#JBValue").val();
+    JBGetCalculation(FQ,s,v);
+}
+
+//calculations for overall ratings on modify page
+function JBModifyCalculation(){
+    var FQ = $("#JBModifyFood").val();
+    var s = $("#JBModifyService").val();
+    var v = $("#JBModifyValue").val();
+    JBGetModifyCalculation(FQ,s,v);
+}
+
+//add to local storage
+function JBAddToStorage()
+{
+    var getEmail = $("#JBDefault").val();
+    localStorage.setItem('default',getEmail);
+    alert("Default reviewer email saved.");
+}
+
+//display default email when adding a new review in reviewer email text box
+function JBGetEmail(){
+    var getEmail = localStorage.getItem('default');
+    $("#JBReviewerEmail").val(getEmail);
+}
+
+//clear the local storage
+function JBClearStorage(){
+    localStorage.clear();
+}
+
+//set default email
+function JBDefaultEmail(){
+    $("#JBDefault").val("jbernoski2013@conestogac.on.ca");
+}
+
+//clear database
+function JBClearDatabase(){
+    alert("Really want to clear database?");
+    DB.JBClearTables();
+    alert("Database cleared");
+}
+
+//show the reviews
+function JBShowReviews(){
+    JBGetReviews();
+}
+
+//update the review
+function JBUpdate_click(){
+    JBUpdateReview();
+   // $.mobile.changePage("#JBReviewPage", {transition: 'none'});
+}
+
+//delete the review
+function JBDelete_click(){
+    JBDeleteReview();
+    alert("Record deleted");
+}
+function init(){
+    $("#JBRating").on("click", checkUncheck);
+    $("#JBSave").on("click",JBSave_click);
+    $("#JBFoodQuality").on("change",JBCalculate);
+    $("#JBValue").on("change",JBCalculate);
+    $("#JBService").on("change",JBCalculate);
+    $("#JBUpdate").on("click",JBUpdate_click);
+    $("#JBModifyFood").on("change",JBModifyCalculation);
+    $("#JBModifyService").on("change", JBModifyCalculation);
+    $("#JBModifyValue").on("change", JBModifyCalculation);
+    $("#JBSaveDefault").on("click",JBAddToStorage);
+    $("#JBClear").on("click",JBClearDatabase);
+    JBDefaultEmail();
+    JBGetEmail();
+    $("#JBReviewPage").on("pageshow", JBShowReviews);
+    $("#JBModifyReviewPage").on("pageshow", modifyPageShow);
+    $("#JBDelete").on("click",JBDelete_click);
+}
+
+function initDB(){
+    console.info("Creating database ...");
+    try {
+        DB.JBCreateDatabase();
+        if (db) {
+            console.info("Creating tables ... ");
+            DB.JBCreateTables();
+        }
+    } catch (e) {
+        console.error("Error: (Fatal) Error in initDB(). Can not proceed.");
+    }
+}
+
+$(document).ready(function () {
+    init();
+    initDB();
+});
