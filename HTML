@@ -1,0 +1,249 @@
+<!--Julia Bernoski
+    March 18th 2018
+    PROG3180 Assignment2
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>JB Feedback A3</title>
+    <!--jQuery-->
+    <script src="js/lib/jquery-2.1.4.js"></script>
+    <!--jQuery mobile-->
+    <script src="js/lib/jquery.mobile-1.4.5.js"></script>
+    <!--jQuery mobile css-->
+    <link rel="stylesheet" type="text/css" href="css/lib/jquery.mobile-1.4.5.css">
+    <!--jQuery validation lib-->
+    <script src="js/lib/jquery.validate.js"></script>
+    <!-- My scripts -->
+    <script src="js/JBdatabase.js"></script>
+    <script src="js/JBfeedbackDAL.js"></script>
+    <script src="js/JBFacade.js"></script>
+    <script src="js/JButil.js"></script>
+    <script src="js/JBglobal.js"></script>
+    <!-- My css -->
+    <link rel="stylesheet" type="Text/css" href="css/JBMyStyles.css">
+    <link rel="stylesheet" type="Text/css" href="css/JBMyStyle.css">
+
+</head>
+<body>
+
+<!-- Home page -->
+
+<div data-role="page" id="JBPageHome">
+    <header data-role="header" data-theme="b" data-position="fixed">
+        <h1> JB Feedback A3 </h1>
+        <div data-role="navbar" data-iconpos="top">
+            <ul>
+                <li><a href="#JBPageHome" data-icon="home" data-theme="a" class="ui-btn-active ui-state-persist"
+                >Home</a></li>
+
+                <li><a href="#JBAddFeedbackPage" data-icon="plus" data-theme="a">Add</a></li>
+                <li><a href="#JBReviewPage" data-icon="grid" data-theme="a">Review</a></li>
+                <li><a href="#JBSettingsPage" data-icon="gear" data-theme="a">Settings</a></li>
+            </ul>
+        </div>
+
+    </header>
+    <section data-role="content">
+        <h2 align="left"> Julia Bernoski's Feedback A3 App</h2>
+        <p> Welcome to the Julia Bernoski's Feedback A3 app. A prototype designed for mobile programming class.
+        This is the first iteration of the app to keep track of different places you visited along with your reviews</p>
+
+        <div align="center">
+            <img src="img/JBcat-box-icon.png" alt="icon" width="60%">
+        </div>
+    <p>Please feel free to contact me if you have any suggestions!</p>
+
+        <button data-icon="plus" href="">Call 519-789-0000</button>
+        <button data-icon="plus" href="mailto:jbernoski2013@conestogac.on.ca">Jbernoski2013@conestogac.on.ca</button>
+
+        Website:
+        <button data-icon="plus" href="http://www.conestogac.on.ca/">Conestoga College</button>
+
+    </section>
+
+    <footer data-role="footer" data-theme="b" data-position="fixed">
+        <h1>&copy; 2018 Julia Bernoski </h1>
+    </footer>
+</div>
+
+    <!-- Add Page -->
+
+    <div data-role="page" id="JBAddFeedbackPage">
+        <header data-role="header" data-theme="b" data-position="fixed">
+            <h1> Add a Feedback </h1>
+            <div data-role="navbar" data-iconpos="top">
+                <ul>
+                    <li><a href="#JBPageHome" data-icon="home" data-theme="a">Home</a></li>
+
+                    <li><a href="#JBAddFeedbackPage" data-icon="plus" data-theme="a" class="ui-btn-active ui-state-persist"
+                    >Add</a></li>
+                    <li><a href="#JBReviewPage" data-icon="grid" data-theme="a">Review</a></li>
+                    <li><a href="#JBSettingsPage" data-icon="gear" data-theme="a">Settings</a></li>
+                </ul>
+            </div>
+        </header>
+        <section data-role="content">
+           <form id = "JBAddForm">
+               <label for="JBBusinessName">Business Name:</label>
+               <input type="text" id="JBBusinessName" name="JBBusinessName">
+               <label for="JBType">Type:</label>
+               <select id="JBType" name="JBType">
+                 <option id="JBOther" value="other">other</option>
+                   <option id="JBAsian" value="canadian">canadian</option>
+                   <option id="JBCanadian" value="asian">asian</option>
+               </select>
+               <label for="JBReviewerEmail">Reviewer Email:</label>
+               <input type="text" id="JBReviewerEmail" name="JBReviewerEmail">
+               <label for="JBReviewerComments">Review Comments:</label>
+               <textarea rows="5" cols="5" id="JBReviewerComments" name="JBReviewerComments"></textarea>
+               <label for="JBDate">Review Date:</label>
+               <input type="date" id="JBDate" name="JBDate">
+               <label><input type="checkbox" id="JBRating">Do you want to add your ratings?</label>
+               <div id="JBShow" hidden>
+                   <label for="JBFoodQuality">Food Quality (0-5):</label>
+                   <input type="number" id="JBFoodQuality" name="JBFoodQuality" placeholder="0">
+                   <label for="JBService">Service (0-5):</label>
+                   <input type="number" id="JBService" name="JBService" placeholder="0">
+                   <label>Value (0-5):</label>
+                   <input type="number" id="JBValue" name="JBValue" placeholder="0">
+                   <label for="JBOverall">Overall Rating:</label>
+                   <input type="text" id="JBOverall" name="JBOverall" disabled>
+               </div>
+               <button id="JBSave">Save</button>
+           </form>
+
+        </section>
+
+        <footer data-role="footer" data-theme="b" data-position="fixed">
+            <h1>&copy; 2018 Julia Bernoski </h1>
+        </footer>
+</div>
+<!-- Review Page -->
+
+<div data-role="page" id="JBReviewPage">
+    <header data-role="header" data-theme="b" data-position="fixed">
+        <h1> List of Reviews </h1>
+        <div data-role="navbar" data-iconpos="top">
+            <ul>
+                <li><a href="#JBPageHome" data-icon="home" data-theme="a">Home</a></li>
+                <li><a href="#JBAddFeedbackPage" data-icon="plus" data-theme="a">Add</a></li>
+                <li><a href="#JBReviewPage" data-icon="grid" data-theme="a" class="ui-btn-active ui-state-persist"
+                >Review</a></li>
+                <li><a href="#JBSettingsPage" data-icon="gear" data-theme="a">Settings</a></li>
+            </ul>
+        </div>
+    </header>
+    <section data-role="content">
+        <ul id="lvAll" data-role="listview" class="ui-listview-inset">
+            <li>
+                <a href="#JBModifyReviewPage" data-theme="a">
+                    <h3></h3>
+                    <p></p>
+                </a>
+            </li>
+            <li>
+                <a href="#JBModifyReviewPage" data-theme="a">
+                    <h3></h3>
+                    <p></p>
+                </a>
+            </li>
+
+        </ul>
+    </section>
+
+    <footer data-role="footer" data-theme="b" data-position="fixed">
+        <h1>&copy; 2018 Julia Bernoski </h1>
+    </footer>
+</div>
+<!-- Modify Review Page -->
+
+<div data-role="page" id="JBModifyReviewPage">
+    <header data-role="header" data-theme="b" data-position="fixed">
+        <h1> Modify Feedback </h1>
+        <div data-role="navbar" data-iconpos="top">
+            <ul>
+                <li><a href="#JBPageHome" data-icon="home" data-theme="a">Home</a></li>
+                <li><a href="#JBAddFeedbackPage" data-icon="plus" data-theme="a">Add</a></li>
+                <li><a href="#JBReviewPage" data-icon="grid" data-theme="a" class="ui-btn-active ui-state-persist"
+                >Review</a></li>
+                <li><a href="#JBSettingsPage" data-icon="gear" data-theme="a">Settings</a></li>
+            </ul>
+        </div>
+    </header>
+    <section data-role="content">
+        <form id = "JBModifyForm">
+            <label for="JBModifyBusiness">Business Name: </label>
+            <input type="text" name="JBModifyBusiness" id="JBModifyBusiness" placeholder="Nando's">
+            <label for="JBModifyType">Type</label>
+            <select id="JBModifyType">
+               <option>Other</option>
+                <option>Asian</option>
+                <option>Canadian</option>
+            </select>
+            <label for="JBModifyEmail">Reviewer Email: </label>
+            <input type="text" name="JBModifyEmail" id="JBModifyEmail" placeholder="person1@gmail.com">
+            <label for="JBModifyComments">Reviewer Comments:</label>
+            <textarea rows="4" cols="50" name="JBModifyComments" id="JBModifyComments">Such good chicken</textarea>
+            <label for="JBModifyDate">Date</label>
+            <input type="date" id="JBModifyDate" name="JBModifyDate" placeholder="12/12/2001">
+            <label><input type="checkbox" id="JBAddRating" name="JBAddRating">Do you want to add your ratings?</label>
+            <div id="JBModifyRatings" hidden >
+                <label for="JBModifyFood">Food Quality (0-5):</label>
+                <input type="number" id="JBModifyFood" name="JBModifyFood" placeholder="0">
+                <label for="JBModifyService">Service (0-5):</label>
+                <input type="number" id="JBModifyService" name="JBModifyService" placeholder="0">
+                <label for="JBModifyValue">Value (0-5):</label>
+                <input type="number" id="JBModifyValue" name="JBModifyValue" placeholder="0">
+                <label for="JBOverallRatingModify">Overall Rating (calculated):</label>
+                <input type="text" id="JBOverallRatingModify" disabled>
+            </div>
+
+            <div data-role="controlgroup" data-type="horizontal">
+                <a href="#JBReviewPage" data-role="button" id="JBCancel" name="JBCancel" >Cancel</a>
+                <a href="#" data-role="button" id="JBDelete" name="JBDelete">Delete</a>
+                <a href="#" data-role="button" id="JBUpdate" name="JBUpdate">Update</a>
+            </div>
+        </form>
+
+
+    </section>
+
+    <footer data-role="footer" data-theme="b" data-position="fixed">
+        <h1>&copy; 2018 Julia Bernoski </h1>
+    </footer>
+</div>
+<!-- Settings Page -->
+
+<div data-role="page" id="JBSettingsPage">
+    <header data-role="header" data-theme="b" data-position="fixed">
+        <h1> Settings</h1>
+        <div data-role="navbar" data-iconpos="top">
+            <ul>
+                <li><a href="#JBPageHome" data-icon="home" data-theme="a">Home</a></li>
+
+                <li><a href="#JBAddFeedbackPage" data-icon="plus" data-theme="a">Add</a></li>
+                <li><a href="#JBReviewPage" data-icon="grid" data-theme="a">Review</a></li>
+                <li><a href="#JBSettingsPage" data-icon="gear" data-theme="a" class="ui-btn-active ui-state-persist">Settings</a></li>
+            </ul>
+        </div>
+    </header>
+    <section data-role="content">
+        <form id="JBSettingsForm">
+            <label for="JBDefault">Default reviewer Email:</label>
+            <input name="JBDefault" id="JBDefault">
+            <button name="JBSaveDefault" id="JBSaveDefault">Save Defaults</button>
+            <button name="JBClear" id="JBClear">Clear Database</button>
+        </form>
+
+    </section>
+
+    <footer data-role="footer" data-theme="b" data-position="fixed">
+        <h1>&copy; 2018 Julia Bernoski </h1>
+    </footer>
+</div>
+</body>
+</html>
