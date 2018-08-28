@@ -1,0 +1,81 @@
+
+#JBContactLinks{
+list-style-type: none;
+
+}
+
+#JBWebsiteLink{
+    list-style-type: none;
+}
+
+#JBSave{
+    width: 100px;
+    height: 50px;
+    background-color: #3388cc;
+    color:white;
+}
+#JBSubmit{
+    width: 100px;
+    height: 50px;
+    background-color: #3388cc;
+    color:white;
+}
+
+#JBFeedbackList{
+    list-style-type: none;
+
+}
+
+#JBLink1{
+    border: solid 1px lightgray;
+    padding-left:10px;
+    border-radius: 2px;
+    padding-top:5px;
+    padding-bottom:5px;
+}
+#JBLink2{
+    border: solid 1px lightgray;
+    padding-left:10px;
+    border-radius: 2px;
+    padding-top:5px;
+    padding-bottom:5px;
+}
+#JBSaveDefault{
+    background-color:#3388cc;
+    color:white;
+}
+
+#JBClear{
+    background-color: #000;
+    color:white;
+}
+
+
+a:link{
+    text-decoration: none;
+    color: #000;
+}
+
+#JBCancel{
+    background-color: yellow;
+    color:#000;
+}
+#JBDelete{
+    background-color: #000;
+    color:white;
+}
+#JBUpdate{
+    background-color: #3388cc;
+    color:white;
+}
+
+label.error{
+    color:#F00;
+    font-weight:bold;
+}
+
+input.error,
+selector.error,
+textarea.error{
+    border:1px red solid;
+}
