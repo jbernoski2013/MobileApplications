@@ -1,0 +1,113 @@
+var db;
+
+function errorHandler(tx, error){
+    console.error("SQL error: " + tx + " (" + error.code + ") : " + error.message);
+}
+
+var DB = {
+    JBCreateDatabase: function(){
+        var shortName = "JBFeedbackDB";
+        var version = "1.0";
+        var displayName = "DB for Feedback App A3";
+        var dbSize = 2 * 1024 * 1204;
+
+        function dbCreateSuccess(){
+            console.info("Success: Database creation successful...");
+        }
+
+        db = openDatabase(shortName,version,displayName,dbSize, dbCreateSuccess);
+    },
+    JBCreateTables: function(){
+        function txFunction(tx){
+
+            var options =[];
+
+            function dropSuccess(){
+                console.info("Success: type Table dropped");
+            }
+
+            function successCreate(){
+                console.info("Success: Review Table created...");
+            }
+
+            function successTypeCreate(){
+                console.info("Success: Type Table created...");
+            }
+
+            function insert1Create(){
+                console.info("Success: insert 1 was successful...");
+            }
+            function insert2Create(){
+                console.info("Success: insert 2 was successful...");
+            }
+            function insert3Create(){
+                console.info("Success: insert 3 was successful...");
+            }
+
+            var dropSQL = "DROP TABLE IF EXISTS type;";
+
+            tx.executeSql(dropSQL,dropSuccess);
+
+
+            var typeSQL = "CREATE TABLE IF NOT EXISTS type(" +
+                "id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT," +
+                "name VARCHAR(20) NOT NULL);";
+
+            tx.executeSql(typeSQL,options,successTypeCreate);
+
+            var insert1 = "INSERT INTO type(name) values('other');";
+
+            tx.executeSql(insert1,options,insert1Create);
+
+            var insert2SQL = "INSERT INTO type(name) values('canadian');";
+
+            tx.executeSql(insert2SQL,options,insert2Create);
+
+            var insert3SQL = "INSERT INTO type(name) values('asian');";
+
+            tx.executeSql(insert3SQL,options,insert3Create);
+
+            var reviewSQL = "CREATE TABLE IF NOT EXISTS review(" +
+                "id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT," +
+                "businessName VARCHAR(30) NOT NULL," +
+                "typeId INTEGER NOT NULL," +
+                "reviewerEmail VARCHAR(30)," +
+                "reviewerComments TEXT," +
+                "reviewDate DATE," +
+                "hasRating VARCHAR(1)," +
+                "rating1 INTEGER," +
+                "rating2 INTEGER," +
+                "rating3 INTEGER," +
+                "FOREIGN KEY(typeId) REFERENCES type(id));";
+            tx.executeSql(reviewSQL,options,successCreate);
+        }
+
+        function successTransaction(){
+            console.info("Success: create table transaction successful");
+        }
+
+        db.transaction(txFunction,errorHandler,successTransaction);
+    },
+    JBClearTables: function () {
+        function txFunction(tx) {
+            var sql = "DELETE FROM review;";
+            var options = [];
+            function successDrop() {
+                console.info("Success: clearing Table successful.");
+            }
+            tx.executeSql(sql, options, successDrop, errorHandler);
+        }
+
+        function successTransaction() {
+            console.info("Success: Clearing table transaction successful");
+        }
+
+        db.transaction(txFunction, errorHandler, successTransaction);
+
+    }
+
+};
+
+
+
+
